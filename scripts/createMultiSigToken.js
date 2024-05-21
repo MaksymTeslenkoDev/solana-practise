@@ -6,5 +6,6 @@ module.exports = ({solana, config}) => async () => {
     return await MultiSig.createToken({
         payer,
         multisigAmount: 2,
+        decimals:config.token_decimals
     });
 }

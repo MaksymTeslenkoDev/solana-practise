@@ -22,9 +22,6 @@ module.exports =
       console.log('🔒 Recipient Public:', keygen.publicKey.toString());
       recipient = keygen.publicKey;
     }
-    console.log('🔑 Recipient:', recipient.toString());
-    console.log('🔑 Payer:', payer.publicKey);
-    console.log('🔑 Mint:', mint.toString());
 
     const tokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,

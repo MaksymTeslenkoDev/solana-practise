@@ -2,7 +2,6 @@
 
 const fsp = require('node:fs').promises;
 const path = require('node:path');
-// const common = require('../lib/common.js');
 
 const loadDir = async (dir, sandbox) => {
   const files = await fsp.readdir(dir);
@@ -32,6 +31,10 @@ const loadApplication = async (appPath) => {
   const scriptsPath = path.join(appPath, './scripts');
   const scripts = await loadDir(scriptsPath, sandbox);
   sandbox.scripts = Object.freeze(scripts);
+
+  const apiPath = path.join(appPath, './api');
+  const api = await loadDir(apiPath, sandbox);
+  sandbox.api = Object.freeze(api);
 
   return sandbox;
 };
