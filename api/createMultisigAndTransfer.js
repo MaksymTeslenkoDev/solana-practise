@@ -7,7 +7,7 @@ module.exports =
     let signers = [adresses.signer1, adresses.signer2, adresses.signer3];
     let mintAuthority = adresses.mintAuthorityAccount;
     if(!mint || !signers || !mintAuthority) {
-        const multisigData = await app.scripts.createMultiSigToken();
+        const multisigData = await scripts.createMultiSigToken();
         mint = multisigData.mint;
         signers = multisigData.signers;
         mintAuthority = multisigData.mintAuthority;
