@@ -1,6 +1,12 @@
-const { Token, TOKEN_PROGRAM_ID } = require('@solana/spl-token');
+const { createTransferInstruction } = require('@solana/spl-token');
 
-const { Transaction, Keypair } = require('@solana/web3.js');
+const {
+  Transaction,
+  Keypair,
+  Connection,
+  PublicKey,
+  clusterApiUrl,
+} = require('@solana/web3.js');
 
 module.exports =
   ({ config, solana }) =>
@@ -11,7 +17,6 @@ module.exports =
     recipientPubKey,
     recipientTokenAccount,
     amount,
-    signers = null,
   }) => {
     // Tokens account
     const recipientTokenAccountPubKey = new PublicKey(recipientTokenAccount);
@@ -21,30 +26,28 @@ module.exports =
     // Users wallets
     const senderKeypair = Keypair.fromSecretKey(new Uint8Array(senderSecret));
     const recipientWallet = new PublicKey(recipientPubKey);
-
-
-    const multisigners = signers && signers.map((secret)=>Keypair.fromSecretKey(new Uint8Array(secret)));
-    const transferInstruction = Token.createTransferInstruction(
-      sourceTokenAccountPubKey,
-      recipientTokenAccountPubKey,
+    const transferInstruction = createTransferInstruction(
       ownerTokenAccountPubKey,
-      amount * 10 ** config.token_decimals,
-      multisigners,
-      TOKEN_PROGRAM_ID,
+      recipientTokenAccountPubKey,
+      senderKeypair.publicKey,
+      amount * 10 ** config.blockchain.token_decimals,
     );
+
+    const connection = new Connection(clusterApiUrl('devnet'));
 
     // Create transaction and add transfer instruction
     const transaction = new Transaction().add(transferInstruction);
 
     transaction.recentBlockhash = (
-      await connection.getRecentBlockhash()
+      await connection.getLatestBlockhash()
     ).blockhash;
 
     transaction.feePayer = recipientWallet;
-
     transaction.partialSign(senderKeypair);
 
     // Serialize the transaction message
-    const serializedTransaction = transaction.serializeMessage();
+    const serializedTransaction = transaction.serialize({
+      requireAllSignatures: false,
+    });
     return serializedTransaction.toString('base64');
   };

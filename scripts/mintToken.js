@@ -15,7 +15,7 @@ module.exports =
     mintAuthority = new PublicKey(mintAuthority);
 
     // Our token has two decimal places
-    const MINOR_UNITS_PER_MAJOR_UNITS = Math.pow(10, 2);
+    const MINOR_UNITS_PER_MAJOR_UNITS = Math.pow(10, config.blockchain.token_decimals);
     const payer = Keypair.fromSecretKey(
       new Uint8Array(config.blockchain.secret),
     );

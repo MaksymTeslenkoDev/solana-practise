@@ -9,6 +9,7 @@ const {
 module.exports =
   ({ config, console }) =>
   async ({ mint, recipient = null }) => {
+    console.log('🔑 Mint:', mint);
     mint = new PublicKey(mint);
     const payer = Keypair.fromSecretKey(
       new Uint8Array(config.blockchain.secret),
